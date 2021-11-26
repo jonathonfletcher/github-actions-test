@@ -1,0 +1,59 @@
+name: Deploy Repository
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+concurrency:
+  group: setup-build-deploy
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - id: checkout-repo
+        uses: actions/checkout@v2
+      - id: setup-go-environment
+        run: |
+          echo "GOPATH=$(go env GOPATH)" >> $GITHUB_ENV
+          echo "$(go env GOPATH)/bin" >> $GITHUB_PATH
+      - id: setup-go
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.17
+      - id: cache-go-modules
+        uses: actions/cache@v2
+        with:
+          path: /home/runner/go/pkg/mod
+          key: go-pkg-mod-${{ runner.os }}-${{ hashFiles('**/go.mod', '**/go.sum') }}
+      - id: run-make
+        run: |
+          pwd
+          make all
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - id: minio-deply
+        uses: lovellfelix/minio-deploy-action@v1
+        with:
+          endpoint: https://minio.somegroup.net
+          access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          bucket: "github"
+          target_dir: "/"
+          source_dir: "example"
+      # - id: configure-aws-credentials
+      #   uses: aws-actions/configure-aws-credentials@v1
+      #   with:
+      #     aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      #     aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      #     aws-region: us-west-2
+      # - id: upload-to-s3
+      #   run: |
+      #     aws --endpoint-url https://minio.somegroup.net/ s3 sync example s3://example --delete
