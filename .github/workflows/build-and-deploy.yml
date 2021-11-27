@@ -35,10 +35,6 @@ jobs:
         run: |
           pwd
           make all
-  deploy:
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
       - id: minio-deply
         uses: lovellfelix/minio-deploy-action@v1
         with:
