@@ -1,6 +1,10 @@
 .DEFAULT_GOAL := all
 
+OUTPUTDIR ?= .
+
 .PHONY: all
 all:
-	${MAKE} -C example
+	@echo $(OUTPUTDIR)
+	@mkdir -p ${OUTPUTDIR}
+	${MAKE} -C example OUTPUTDIR=$(OUTPUTDIR)
 

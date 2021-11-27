@@ -31,10 +31,13 @@ jobs:
         with:
           path: /home/runner/go/pkg/mod
           key: go-pkg-mod-${{ runner.os }}-${{ hashFiles('**/go.mod', '**/go.sum') }}
+      - id: setup-deploy-environment
+        run: |
+          echo "output_dir=output" >> $GITHUB_ENV
       - id: run-make
         run: |
           pwd
-          make all
+          make all OUTPUTDIR=${{ env.outputdir }}
       - id: minio-deply
         uses: lovellfelix/minio-deploy-action@v1
         with:
@@ -43,7 +46,7 @@ jobs:
           secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           bucket: "github"
           target_dir: "/"
-          source_dir: "example"
+          source_dir: ${{ env.output_dir }}
       # - id: configure-aws-credentials
       #   uses: aws-actions/configure-aws-credentials@v1
       #   with:
