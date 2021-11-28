@@ -22,7 +22,8 @@ jobs:
         run: |
           echo "GOPATH=$(go env GOPATH)" >> $GITHUB_ENV
           echo "$(go env GOPATH)/bin" >> $GITHUB_PATH
-          echo "VCSTAG=$(git "describe --always --abbrev=16 --match "v[0-9]*" HEAD) >> $GITHUB_ENV
+          echo "VCSTAG=$(git describe --always --abbrev=16 --match \"v[0-9]*\" HEAD)" >> $GITHUB_ENV
+          echo "TIMESTAMP=$(date -u \"+%Y-%m-%dT%H:%M:%S+00:00\")" >> $GITHUB_ENV
       - id: setup-go
         uses: actions/setup-go@v2
         with:
@@ -35,7 +36,7 @@ jobs:
       - id: run-make
         run: |
           pwd
-          make all BUILD_VCSTAG=${{ env.VCSTAG }}
+          make all BUILD_VCSTAG=${{ env.VCSTAG }} BUILD_TIMESTAMP=${{ env.TIMESTAMP }}
       - id: configure-aws-credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
