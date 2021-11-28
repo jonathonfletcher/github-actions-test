@@ -22,6 +22,7 @@ jobs:
         run: |
           echo "GOPATH=$(go env GOPATH)" >> $GITHUB_ENV
           echo "$(go env GOPATH)/bin" >> $GITHUB_PATH
+          echo "VCSTAG=$(git "describe --always --abbrev=16 --match "v[0-9]*" HEAD) >> $GITHUB_ENV
       - id: setup-go
         uses: actions/setup-go@v2
         with:
@@ -34,22 +35,13 @@ jobs:
       - id: run-make
         run: |
           pwd
-          make all
-      - id: minio-deply
-        uses: lovellfelix/minio-deploy-action@v1
+          make all BUILD_VCSTAG=${{ env.VCSTAG }}
+      - id: configure-aws-credentials
+        uses: aws-actions/configure-aws-credentials@v1
         with:
-          endpoint: https://minio.somegroup.net
-          access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          bucket: "github"
-          target_dir: "/"
-          source_dir: "example"
-      # - id: configure-aws-credentials
-      #   uses: aws-actions/configure-aws-credentials@v1
-      #   with:
-      #     aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      #     aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      #     aws-region: us-west-2
-      # - id: upload-to-s3
-      #   run: |
-      #     aws --endpoint-url https://minio.somegroup.net/ s3 sync example s3://example --delete
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: eu-west-1
+      - id: upload-to-s3
+        run: |
+          aws s3 sync example s3://acadiant-temp-working --dryrun
