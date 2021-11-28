@@ -24,7 +24,7 @@ jobs:
           echo "$(go env GOPATH)/bin" >> $GITHUB_PATH
           echo "VCSTAG=$(git log -n 1 --pretty=format:\"%H\")" >> $GITHUB_ENV
           echo "TOPDIR=$(pwd)" >> $GITHUB_ENV
-          echo "DEPLOY_DIR=%{{ env.TOPDIR }})/deploy" >> $GITHUB_ENV
+          echo "DEPLOY_DIR=${{ env.TOPDIR }})/deploy" >> $GITHUB_ENV
       - id: setup-go
         uses: actions/setup-go@v2
         with:
