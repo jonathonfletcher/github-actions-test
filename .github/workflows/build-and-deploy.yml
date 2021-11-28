@@ -37,7 +37,7 @@ jobs:
       - id: run-make
         run: |
           pwd
-          make all BUILD_VCSTAG=${{ env.VCSTAG }} TOPDIR=${{ env.TOPDIR }}
+          make all BUILD_VCSTAG=${{ env.VCSTAG }} DEPLOY_DIR=${{ env.DEPLOY_DIR }}
       - id: configure-aws-credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:

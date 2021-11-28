@@ -1,10 +1,11 @@
 
-TOPDIR ?= $(shell pwd)
+DEPLOY_DIR ?= $(shell pwd)/deploy
+
 BUILD_VCSTAG ?= $(shell git log -n 1 --pretty=format:"%H")
 BUILD_TIME ?= $(shell date -u "+%Y-%m-%dT%H:%M:%S+00:00")
 BUILD_MODULE = $(shell go list -m)
 BUILD_BINARY = $(shell basename `go list -m`)
-BUILD_DIRECTORY = ${TOPDIR}/deploy/${BUILD_VCSTAG}
+BUILD_DIRECTORY = ${DEPLOY_DIR}/${BUILD_VCSTAG}
 
 .DEFAULT_GOAL := all
 
