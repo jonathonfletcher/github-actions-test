@@ -1,6 +1,6 @@
-.DEFAULT_GOAL := all
+.DEFAULT_GOAL := deploy
 
-.PHONY: all
-all:
+.PHONY: deploy
+deploy:
 	${MAKE} -C example
 

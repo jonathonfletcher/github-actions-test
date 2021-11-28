@@ -1,10 +1,8 @@
 name: Deploy Repository
 
 on:
-  push:
-    branches:
-      - main
   pull_request:
+    types: [ closed ]
     branches:
       - main
 
@@ -13,7 +11,8 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  build:
+  build-and-deploy:
+    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     steps:
       - id: checkout-repo
@@ -21,8 +20,8 @@ jobs:
       - id: setup-environment
         run: |
           echo "$(go env GOPATH)/bin" >> $GITHUB_PATH
-          echo "DEPLOY_DIR=$(pwd)/deploy" >> $GITHUB_ENV
           echo "GOPATH=$(go env GOPATH)" >> $GITHUB_ENV
+          echo "DEPLOY_DIR=$(pwd)/deploy" >> $GITHUB_ENV
           echo "VCSTAG=$(git log -n 1 --pretty=format:\"%H\")" >> $GITHUB_ENV
       - id: setup-go
         uses: actions/setup-go@v2
@@ -35,8 +34,7 @@ jobs:
           key: go-pkg-mod-${{ runner.os }}-${{ hashFiles('**/go.mod', '**/go.sum') }}
       - id: run-make
         run: |
-          pwd
-          make all BUILD_VCSTAG=${{ env.VCSTAG }} DEPLOY_DIR=${{ env.DEPLOY_DIR }}
+          make deploy BUILD_VCSTAG=${{ env.VCSTAG }} DEPLOY_DIR=${{ env.DEPLOY_DIR }}
       - id: configure-aws-credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
