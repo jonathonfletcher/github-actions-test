@@ -46,4 +46,4 @@ jobs:
           aws-region: eu-west-1
       - id: upload-to-s3
         run: |
-          aws s3 sync %{{ env.DEPLOY_DIR }} s3://acadiant-temp-working --dryrun
+          aws s3 sync ${{ env.DEPLOY_DIR }} s3://acadiant-temp-working --dryrun
