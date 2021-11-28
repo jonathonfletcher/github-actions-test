@@ -18,12 +18,11 @@ jobs:
     steps:
       - id: checkout-repo
         uses: actions/checkout@v2
-      - id: setup-go-environment
+      - id: setup-environment
         run: |
           echo "$(go env GOPATH)/bin" >> $GITHUB_PATH
           echo "DEPLOY_DIR=$(pwd)/deploy" >> $GITHUB_ENV
           echo "GOPATH=$(go env GOPATH)" >> $GITHUB_ENV
-          echo "TOPDIR=$(pwd)" >> $GITHUB_ENV
           echo "VCSTAG=$(git log -n 1 --pretty=format:\"%H\")" >> $GITHUB_ENV
       - id: setup-go
         uses: actions/setup-go@v2
