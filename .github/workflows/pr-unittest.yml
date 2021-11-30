@@ -1,0 +1,34 @@
+name: UnitTest on Pull Request
+
+on:
+  pull_request:
+    types: [ opened, reopened ]
+
+concurrency:
+  group: pr-unittest
+  cancel-in-progress: true
+
+jobs:
+  pr-unittest:
+    runs-on: ubuntu-latest
+    steps:
+      - id: checkout-repo
+        uses: actions/checkout@v2
+      - id: setup-environment
+        run: |
+          echo "$(go env GOPATH)/bin" >> $GITHUB_PATH
+          echo "GOPATH=$(go env GOPATH)" >> $GITHUB_ENV
+          echo "DEPLOY_DIR=$(pwd)/deploy" >> $GITHUB_ENV
+          echo "VCSTAG=$(git log -n 1 --pretty=format:\"%H\")" >> $GITHUB_ENV
+      - id: setup-go
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.17
+      - id: cache-go-modules
+        uses: actions/cache@v2
+        with:
+          path: /home/runner/go/pkg/mod
+          key: go-pkg-mod-${{ runner.os }}-${{ hashFiles('**/go.mod', '**/go.sum') }}
+      - id: run-make
+        run: |
+          make unittest BUILD_VCSTAG=${{ env.VCSTAG }} DEPLOY_DIR=${{ env.DEPLOY_DIR }}
