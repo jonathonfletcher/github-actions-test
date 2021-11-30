@@ -16,8 +16,8 @@ func main() {
 	//ctx := context.Background()
 	execName, _ := os.Executable()
 
+	log.Println("execName:", filepath.Base(execName))
 	log.Println("Version:", Version)
 	log.Println("BuildTime:", BuildTime)
 	log.Println("VCSTag:", VCSTag)
-	log.Println("execName:", filepath.Base(execName))
 }
