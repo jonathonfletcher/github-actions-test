@@ -1,6 +1,6 @@
 .DEFAULT_GOAL := deploy
 
-.PHONY: deploy
-deploy:
-	${MAKE} -C example
+.PHONY: deploy unittest
+deploy unittest:
+	${MAKE} -C example $@
 

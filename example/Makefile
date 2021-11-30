@@ -32,7 +32,7 @@ clean:
 
 .PHONY: unittest
 unittest:
-        go test -v
+	go test -v
 
 .PHONY: all-windows all-%
 all-windows:
