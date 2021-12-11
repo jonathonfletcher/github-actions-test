@@ -14,7 +14,6 @@ var (
 )
 
 func main() {
-	//ctx := context.Background()
 	execName, _ := os.Executable()
 	versionMap := map[string]string{
 		"Version":   Version,
