@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+    "fmt"
 	"log"
 	"os"
 	"path/filepath"
@@ -23,6 +24,8 @@ func main() {
 	}
 	versionString, _ := json.Marshal(versionMap)
 	log.Println(string(versionString))
+
+    log.Println(fmt.Sprintf("%s / %s / %s / %s", filepath.Base(execName), Version, BuildTime, VCSTag))
 
 	log.Println("Version:", Version)
 	log.Println("BuildTime:", BuildTime)
