@@ -24,11 +24,15 @@ report:
 	@echo BUILD_BINARY=${BUILD_BINARY}
 	@echo BUILD_DIRECTORY=${BUILD_DIRECTORY}
 
-clean:
 .PHONY: clean
+clean:
 	echo $(BUILD_DIRECTORY)
 	go clean
 	go mod tidy
+
+.PHONY: unittest
+unittest:
+	go test -v
 
 .PHONY: all-windows all-%
 all-windows:
