@@ -39,6 +39,7 @@ all-windows:
 	GOARCH="amd64" GOOS=windows BUILD_EXTENSION=".exe" ${MAKE} binary
 all-%:
 	GOARCH="amd64" GOOS=$* BUILD_EXTENSION="" ${MAKE} binary
+	GOARCH="arm64" GOOS=$* BUILD_EXTENSION="" ${MAKE} binary
 
 .PHONY: binary
 binary:
@@ -47,5 +48,5 @@ binary:
 		CGO_ENABLED=0 GOOS=${GOOS} GOARCH=${GOARCH} \
 		go build -ldflags \
 		"-X main.VCSTag=$(BUILD_VCSTAG) -X main.BuildTime=$(BUILD_TIME)" \
-		-a -installsuffix nocgo \
-		-o "$(BUILD_DIRECTORY)/$(GOOS)/$(BUILD_BINARY)$(BUILD_EXTENSION)"
+		-installsuffix nocgo \
+		-o "$(BUILD_DIRECTORY)/$(GOOS)/$(GOARCH)/$(BUILD_BINARY)$(BUILD_EXTENSION)"
